@@ -1,0 +1,1110 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Something Just for You</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Dancing+Script:wght@500;700&family=Great+Vibes&family=Pacifico&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg: #0a0112;
+        --rose: #d14477;
+        --blush: #f28ab0;
+        --petal: #ffc2d9;
+        --gold: #e0b860;
+        --lilac: #c9aaee;
+        --cream: #fff0f6;
+        --muted: rgba(255, 220, 235, 0.6);
+        --purple: #7a3fa0;
+      }
+
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      html,
+      body {
+        width: 100%;
+        height: 100%;
+        background: var(--bg);
+        color: var(--cream);
+        font-family: "Cormorant Garamond", Georgia, serif;
+        overflow: hidden;
+      }
+
+      /* ══════════════════════════════
+       BACKGROUND — rich & romantic
+    ══════════════════════════════ */
+      .bg-layer {
+        position: fixed;
+        inset: 0;
+        z-index: 0;
+        background:
+          radial-gradient(
+            ellipse 65% 55% at 10% 15%,
+            rgba(180, 30, 80, 0.3) 0%,
+            transparent 60%
+          ),
+          radial-gradient(
+            ellipse 55% 50% at 90% 85%,
+            rgba(100, 20, 140, 0.28) 0%,
+            transparent 60%
+          ),
+          radial-gradient(
+            ellipse 50% 45% at 75% 10%,
+            rgba(200, 60, 100, 0.18) 0%,
+            transparent 55%
+          ),
+          radial-gradient(
+            ellipse 70% 70% at 50% 50%,
+            rgba(40, 5, 60, 0.55) 0%,
+            transparent 80%
+          ),
+          linear-gradient(160deg, #130020 0%, #0a0112 45%, #150010 100%);
+        animation: breathe 9s ease-in-out infinite;
+      }
+      @keyframes breathe {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.88;
+        }
+      }
+
+      /* subtle grain */
+      .grain {
+        position: fixed;
+        inset: 0;
+        z-index: 1;
+        pointer-events: none;
+        opacity: 0.025;
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+        background-size: 200px;
+      }
+
+      /* twinkling stars */
+      .stars {
+        position: fixed;
+        inset: 0;
+        z-index: 2;
+        pointer-events: none;
+        overflow: hidden;
+      }
+      .star {
+        position: absolute;
+        border-radius: 50%;
+        background: white;
+        animation: twinkle var(--dur, 3s) ease-in-out infinite;
+        animation-delay: var(--delay, 0s);
+      }
+      @keyframes twinkle {
+        0%,
+        100% {
+          opacity: 0.1;
+          transform: scale(1);
+        }
+        50% {
+          opacity: 0.9;
+          transform: scale(1.5);
+        }
+      }
+
+      /* falling petals */
+      .petals {
+        position: fixed;
+        inset: 0;
+        z-index: 3;
+        pointer-events: none;
+        overflow: hidden;
+      }
+      .petal-item {
+        position: absolute;
+        top: -40px;
+        animation: fallPetal linear infinite;
+        opacity: 0.75;
+      }
+      @keyframes fallPetal {
+        0% {
+          transform: translateY(-40px) rotate(0deg) translateX(0);
+          opacity: 0.8;
+        }
+        50% {
+          transform: translateY(50vh) rotate(180deg)
+            translateX(var(--sway, 30px));
+          opacity: 0.6;
+        }
+        100% {
+          transform: translateY(110vh) rotate(360deg) translateX(0);
+          opacity: 0;
+        }
+      }
+
+      /* rising particles */
+      .particles {
+        position: fixed;
+        inset: 0;
+        z-index: 2;
+        pointer-events: none;
+        overflow: hidden;
+      }
+      .particle {
+        position: absolute;
+        border-radius: 50%;
+        opacity: 0;
+        animation: rise linear infinite;
+      }
+      @keyframes rise {
+        0% {
+          transform: translateY(100vh) scale(0);
+          opacity: 0;
+        }
+        10% {
+          opacity: 0.5;
+        }
+        90% {
+          opacity: 0.2;
+        }
+        100% {
+          transform: translateY(-10vh) translateX(var(--dx, 40px)) scale(1.2);
+          opacity: 0;
+        }
+      }
+
+      /* ══════════════════════════════
+       LAYOUT
+    ══════════════════════════════ */
+      .stage {
+        position: relative;
+        z-index: 10;
+        width: 100vw;
+        height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: clamp(16px, 4vw, 40px);
+      }
+
+      .screen {
+        display: none;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        width: 100%;
+        max-width: 640px;
+        gap: clamp(12px, 2.5vh, 22px);
+      }
+      .screen.active {
+        display: flex;
+        animation: reveal 0.95s cubic-bezier(0.16, 1, 0.3, 1) both;
+      }
+      @keyframes reveal {
+        from {
+          opacity: 0;
+          transform: translateY(30px) scale(0.97);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0) scale(1);
+        }
+      }
+
+      /* ══════════════════════════════
+       TYPOGRAPHY
+    ══════════════════════════════ */
+      /* Gold script — Great Vibes — used for big emotional titles */
+      .t-script {
+        font-family: "Great Vibes", cursive;
+        font-size: clamp(2.6rem, 7.5vw, 5rem);
+        background: linear-gradient(
+          135deg,
+          #e0b860 0%,
+          #f8d87a 45%,
+          #c88050 100%
+        );
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        filter: drop-shadow(0 2px 22px rgba(224, 184, 96, 0.4));
+        line-height: 1.15;
+      }
+
+      /* Cormorant italic — chapter headings */
+      .t-serif {
+        font-family: "Cormorant Garamond", serif;
+        font-size: clamp(1.6rem, 4.8vw, 2.9rem);
+        font-weight: 300;
+        font-style: italic;
+        background: linear-gradient(135deg, #ffc2d9, #d14477);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        filter: drop-shadow(0 0 14px rgba(209, 68, 119, 0.35));
+        line-height: 1.3;
+      }
+
+      /* Dancing Script — warm conversational lines */
+      .t-dance {
+        font-family: "Dancing Script", cursive;
+        font-size: clamp(1.1rem, 3.2vw, 1.7rem);
+        background: linear-gradient(90deg, #ffc2d9, #e8aaf5, #ffc2d9);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        font-weight: 600;
+        line-height: 1.7;
+      }
+
+      /* Pacifico — punchy single lines */
+      .t-pacifico {
+        font-family: "Pacifico", cursive;
+        font-size: clamp(1.4rem, 4vw, 2.5rem);
+        background: linear-gradient(135deg, #c9aaee, #9b59d0);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        filter: drop-shadow(0 0 12px rgba(155, 89, 208, 0.4));
+        line-height: 1.2;
+      }
+
+      /* body prose — elegant & readable */
+      .t-body {
+        font-family: "Cormorant Garamond", serif;
+        font-size: clamp(1rem, 2.7vw, 1.28rem);
+        font-weight: 300;
+        color: var(--muted);
+        line-height: 2;
+        letter-spacing: 0.025em;
+      }
+
+      /* ══════════════════════════════
+       DECORATIVE
+    ══════════════════════════════ */
+      .divider {
+        width: clamp(50px, 15vw, 110px);
+        height: 1px;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          var(--rose),
+          transparent
+        );
+      }
+      .divider-gold {
+        width: clamp(40px, 12vw, 90px);
+        height: 1px;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          var(--gold),
+          transparent
+        );
+      }
+      .ornament {
+        font-size: clamp(1.2rem, 3.5vw, 1.8rem);
+        opacity: 0.55;
+        letter-spacing: 10px;
+      }
+
+      /* ══════════════════════════════
+       NAME GATE
+    ══════════════════════════════ */
+      .gate-icon {
+        font-size: clamp(2.8rem, 9vw, 4.5rem);
+        animation: sway 4s ease-in-out infinite;
+        filter: drop-shadow(0 0 20px rgba(209, 68, 119, 0.5));
+      }
+      @keyframes sway {
+        0%,
+        100% {
+          transform: rotate(-7deg);
+        }
+        50% {
+          transform: rotate(7deg);
+        }
+      }
+
+      .input-wrap {
+        width: min(100%, 330px);
+      }
+      .name-input {
+        width: 100%;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(209, 68, 119, 0.3);
+        border-bottom: 2px solid var(--rose);
+        border-radius: 6px 6px 0 0;
+        padding: 14px 22px;
+        font-family: "Dancing Script", cursive;
+        font-size: clamp(1.15rem, 3.2vw, 1.5rem);
+        color: var(--cream);
+        outline: none;
+        text-align: center;
+        transition: all 0.35s;
+        backdrop-filter: blur(10px);
+      }
+      .name-input::placeholder {
+        color: rgba(255, 194, 217, 0.35);
+        font-style: italic;
+      }
+      .name-input:focus {
+        border-color: var(--blush);
+        border-bottom-color: var(--blush);
+        background: rgba(255, 255, 255, 0.08);
+        box-shadow: 0 8px 32px rgba(209, 68, 119, 0.2);
+      }
+      .err-msg {
+        font-family: "Cormorant Garamond", serif;
+        font-style: italic;
+        font-size: clamp(0.85rem, 2.5vw, 1rem);
+        color: var(--blush);
+        opacity: 0;
+        min-height: 1.4em;
+        transition: opacity 0.4s;
+      }
+      .err-msg.show {
+        opacity: 1;
+      }
+
+      /* ══════════════════════════════
+       BUTTONS
+    ══════════════════════════════ */
+      .btn {
+        font-family: "Dancing Script", cursive;
+        font-size: clamp(1rem, 2.8vw, 1.25rem);
+        font-weight: 700;
+        padding: clamp(11px, 2.2vw, 15px) clamp(28px, 6vw, 52px);
+        border-radius: 50px;
+        border: none;
+        cursor: pointer;
+        transition:
+          transform 0.28s,
+          box-shadow 0.28s;
+        letter-spacing: 0.3px;
+        position: relative;
+        overflow: hidden;
+      }
+      .btn::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        border-radius: 50px;
+        background: rgba(255, 255, 255, 0.1);
+        opacity: 0;
+        transition: opacity 0.25s;
+      }
+      .btn:hover::after {
+        opacity: 1;
+      }
+      .btn:hover {
+        transform: scale(1.07) translateY(-2px);
+      }
+      .btn:active {
+        transform: scale(1.02);
+      }
+
+      .btn-primary {
+        background: linear-gradient(135deg, #d14477, #8f1a45);
+        color: #fff;
+        box-shadow: 0 5px 24px rgba(209, 68, 119, 0.45);
+      }
+      .btn-primary:hover {
+        box-shadow: 0 8px 36px rgba(209, 68, 119, 0.65);
+      }
+
+      .btn-yes {
+        background: linear-gradient(135deg, #2ecb70, #0d8840);
+        color: #fff;
+        box-shadow: 0 5px 24px rgba(46, 203, 112, 0.4);
+      }
+      .btn-yes:hover {
+        box-shadow: 0 8px 36px rgba(46, 203, 112, 0.6);
+      }
+
+      .btn-gold {
+        background: linear-gradient(
+          135deg,
+          rgba(224, 184, 96, 0.18),
+          rgba(224, 184, 96, 0.32)
+        );
+        border: 1px solid rgba(224, 184, 96, 0.5);
+        color: var(--gold);
+        border-radius: 50px;
+        font-family: "Cormorant Garamond", serif;
+        font-style: italic;
+        font-size: clamp(0.95rem, 2.5vw, 1.15rem);
+      }
+      .btn-gold:hover {
+        background: linear-gradient(
+          135deg,
+          rgba(224, 184, 96, 0.32),
+          rgba(224, 184, 96, 0.5)
+        );
+        box-shadow: 0 5px 22px rgba(224, 184, 96, 0.25);
+      }
+
+      .btn-ghost {
+        background: transparent;
+        border: 1px solid rgba(201, 170, 238, 0.38);
+        color: var(--lilac);
+        border-radius: 50px;
+        font-family: "Cormorant Garamond", serif;
+        font-style: italic;
+        font-size: clamp(0.95rem, 2.5vw, 1.15rem);
+      }
+      .btn-ghost:hover {
+        border-color: var(--lilac);
+        color: var(--cream);
+      }
+
+      .btn-row {
+        display: flex;
+        gap: 14px;
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+
+      /* ══════════════════════════════
+       QUOTE CARD
+    ══════════════════════════════ */
+      .quote-card {
+        width: 100%;
+        max-width: 500px;
+        padding: clamp(24px, 5vw, 42px) clamp(22px, 5vw, 46px);
+        background: linear-gradient(
+          135deg,
+          rgba(209, 68, 119, 0.09),
+          rgba(100, 20, 140, 0.12)
+        );
+        border: 1px solid rgba(209, 68, 119, 0.22);
+        border-radius: 16px;
+        position: relative;
+        overflow: hidden;
+        box-shadow:
+          0 0 40px rgba(209, 68, 119, 0.1),
+          inset 0 0 30px rgba(209, 68, 119, 0.05);
+      }
+      .quote-card::before {
+        content: "\201C";
+        position: absolute;
+        top: -8px;
+        left: 18px;
+        font-family: "Great Vibes", cursive;
+        font-size: 5.5rem;
+        color: rgba(209, 68, 119, 0.2);
+        line-height: 1;
+      }
+      .quote-text {
+        font-family: "Cormorant Garamond", serif;
+        font-style: italic;
+        font-size: clamp(1.05rem, 3vw, 1.38rem);
+        font-weight: 300;
+        line-height: 1.9;
+        color: var(--cream);
+      }
+
+      /* ══════════════════════════════
+       BALLOONS
+    ══════════════════════════════ */
+      .balloon-row {
+        display: flex;
+        gap: clamp(10px, 3vw, 20px);
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+      .balloon {
+        background: linear-gradient(135deg, var(--rose), #8f1a45);
+        min-width: clamp(64px, 16vw, 84px);
+        min-height: clamp(64px, 16vw, 84px);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: "Pacifico", cursive;
+        font-size: clamp(0.8rem, 2.5vw, 1.1rem);
+        color: #fff;
+        padding: 10px;
+        box-shadow: 0 8px 28px rgba(209, 68, 119, 0.5);
+        animation: float 3s ease-in-out infinite;
+      }
+      @keyframes float {
+        0%,
+        100% {
+          transform: translateY(0) rotate(-4deg);
+        }
+        50% {
+          transform: translateY(-22px) rotate(4deg);
+        }
+      }
+
+      /* ══════════════════════════════
+       LETTER / TYPEWRITER
+    ══════════════════════════════ */
+      .letter-wrap {
+        width: 100%;
+        max-width: 540px;
+        background: linear-gradient(
+          155deg,
+          rgba(255, 255, 255, 0.04),
+          rgba(209, 68, 119, 0.07)
+        );
+        border: 1px solid rgba(209, 68, 119, 0.18);
+        border-left: 3px solid var(--rose);
+        border-radius: 0 12px 12px 0;
+        padding: clamp(22px, 5vw, 40px);
+        text-align: left;
+        backdrop-filter: blur(8px);
+        box-shadow:
+          -4px 0 28px rgba(209, 68, 119, 0.12),
+          inset 0 0 40px rgba(209, 68, 119, 0.04);
+      }
+      .letter-label {
+        font-family: "Dancing Script", cursive;
+        font-size: clamp(0.9rem, 2.5vw, 1.1rem);
+        background: linear-gradient(135deg, #f28ab0, #d14477);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        align-self: flex-start;
+        padding-left: clamp(0px, 3vw, 30px);
+        margin-bottom: -4px;
+      }
+      #tw-text {
+        font-family: "Dancing Script", cursive;
+        font-size: clamp(1rem, 2.8vw, 1.22rem);
+        line-height: 2.05;
+        color: var(--petal);
+        white-space: pre-wrap;
+        min-height: 2em;
+      }
+      .tw-cursor {
+        display: inline-block;
+        width: 2px;
+        height: 1.1em;
+        background: var(--rose);
+        margin-left: 2px;
+        vertical-align: text-bottom;
+        animation: blink 0.9s step-end infinite;
+      }
+      @keyframes blink {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0;
+        }
+      }
+
+      /* ══════════════════════════════
+       SAD / GRACE OVERLAY
+    ══════════════════════════════ */
+      #grace-overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        z-index: 500;
+        background: rgba(8, 1, 14, 0.97);
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 20px;
+        padding: 30px;
+        animation: fadeIn 0.7s ease both;
+      }
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+
+      /* ══════════════════════════════
+       CONFETTI
+    ══════════════════════════════ */
+      #confetti {
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        z-index: 999;
+      }
+
+      /* ══════════════════════════════
+       FINAL SCREEN
+    ══════════════════════════════ */
+      .pulse-heart {
+        font-size: clamp(65px, 15vw, 110px);
+        display: block;
+        animation: pulse 1.3s ease-in-out infinite;
+      }
+      @keyframes pulse {
+        0%,
+        100% {
+          transform: scale(1);
+          filter: drop-shadow(0 0 10px rgba(209, 68, 119, 0.4));
+        }
+        40% {
+          transform: scale(1.22);
+          filter: drop-shadow(0 0 32px rgba(209, 68, 119, 0.85));
+        }
+        70% {
+          transform: scale(1.11);
+          filter: drop-shadow(0 0 18px rgba(209, 68, 119, 0.6));
+        }
+      }
+
+      /* ══════════════════════════════
+       GIF IMAGES
+    ══════════════════════════════ */
+      .gif-img {
+        border-radius: 18px;
+        box-shadow: 0 8px 32px rgba(209, 68, 119, 0.45);
+        max-width: min(150px, 38vw);
+      }
+
+      @media (max-height: 580px) {
+        .screen {
+          gap: 8px;
+        }
+        .gate-icon {
+          font-size: 2rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="bg-layer"></div>
+    <div class="grain"></div>
+    <div class="stars" id="stars"></div>
+    <div class="petals" id="petals"></div>
+    <div class="particles" id="particles"></div>
+    <canvas id="confetti"></canvas>
+    <audio id="music" loop><source src="music.mp3" type="audio/mpeg" /></audio>
+
+    <!-- Dignified No overlay -->
+    <div id="grace-overlay">
+      <span style="font-size: clamp(2.5rem, 8vw, 4.2rem)">🕊️</span>
+      <p
+        class="t-serif"
+        style="max-width: 440px; font-size: clamp(1.6rem, 4.5vw, 2.6rem)"
+      >
+        I respect your answer
+      </p>
+      <div class="divider"></div>
+      <p class="t-body" style="max-width: 400px">
+        But I’ll say this<br />
+        sometimes the simplest chances<br />
+        turn into the best stories.
+      </p>
+      <div class="divider-gold"></div>
+      <p
+        class="t-dance"
+        style="font-size: clamp(0.9rem, 2.5vw, 1.1rem); opacity: 0.75"
+      >
+        — with honesty, not regret
+      </p>
+      <button
+        class="btn btn-primary"
+        onclick="
+          document.getElementById('grace-overlay').style.display = 'none';
+          toScreen('s8');
+        "
+      >
+        Please......🥹
+      </button>
+    </div>
+
+    <div class="stage">
+      <!-- ── S0: Name Gate ── -->
+      <div class="screen active" id="s0">
+        <span class="gate-icon">🌹</span>
+        <h1 class="t-script">For Someone Special</h1>
+        <div class="divider-gold"></div>
+        <p class="t-body" style="max-width: 360px">
+          This page was written for one person.<br />
+          If you know who you are — please, come in.
+        </p>
+        <div class="input-wrap">
+          <input
+            class="name-input"
+            id="name-input"
+            type="text"
+            placeholder="enter your first name..."
+            autocomplete="off"
+            onkeydown="if (event.key === 'Enter') checkName();"
+          />
+        </div>
+        <p class="err-msg" id="err-msg">
+          That name doesn't match... are you sure? 💔
+        </p>
+        <button class="btn btn-primary" onclick="checkName()">
+          Enter quietly 🌸
+        </button>
+      </div>
+
+      <!-- ── S1: Hold screen ── -->
+      <div class="screen" id="s1">
+        <img
+          class="gif-img"
+          src="https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3Mml6b3FkcWVicHUxYzVhZzZpbnhvajZudnhlYzhleGFrdTB1dnBvOSZlcD12MV9naWZzX3NlYXJjaCZjdD1n/Kep0eJcSyu126vIlND/giphy.gif"
+        />
+        <span class="ornament">· · ·</span>
+        <p class="t-serif" style="font-size: clamp(1.4rem, 4vw, 2.2rem)">
+          Something special is coming...
+        </p>
+      </div>
+
+      <!-- ── S2: Opening ── -->
+      <div class="screen" id="s2">
+        <img
+          class="gif-img"
+          src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExN2I0YTdmYnQyMW02dGY5dWZpMDYya3czN2NocTR3cmJqdmoyNXBtZyZlcD12MV9naWZzX3NlYXJjaCZjdD1n/4rf2N66Hjoh8Cve2mT/giphy.gif"
+        />
+        <h1 class="t-script">I have something<br />to tell you</h1>
+        <p class="t-body" style="max-width: 380px">
+          I've been holding this for a while.<br />
+          I don't know how else to say it except honestly.
+        </p>
+        <button class="btn btn-primary" onclick="toScreen('s3')">
+          Tap to Begin 💖
+        </button>
+      </div>
+
+      <!-- ── S3: Taking chances ── -->
+      <div class="screen" id="s3">
+        <span style="font-size: clamp(2.2rem, 7vw, 3.5rem)">🌙</span>
+        <h2 class="t-serif">Do you believe<br />in random connections?</h2>
+        <p class="t-body">Sometimes you see someone and just... know.</p>
+        <div class="btn-row">
+          <button class="btn btn-yes" onclick="toScreen('s4')">
+            Yes, I do ✨
+          </button>
+          <button class="btn btn-ghost" onclick="toScreen('s12')">
+            I'm not sure
+          </button>
+        </div>
+      </div>
+
+      <!-- ── S4: The honest admission ── -->
+      <div class="screen" id="s4">
+        <div class="quote-card">
+          <p class="quote-text">
+            It’s weird… I know<br />
+            nothing really happened between us —<br />
+            but somehow, you stayed in my mind 🫣<br />
+          </p>
+        </div>
+        <p class="t-dance">You're one of those people. For me.</p>
+        <button class="btn btn-primary" onclick="toScreen('s5')">
+          Go on... 💜
+        </button>
+      </div>
+
+      <div class="screen" id="s12">
+        <div class="quote-card">
+          <img
+            class="gif-img"
+            src="https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExbTFrcTJtMzc5MmJvdWZjODcwdWxyd2lzenRvZ2RpN3RyeDFuZjNhMyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/K6WIhJ07gwGkIAQfwN/giphy.gif"
+          />
+          <p class="quote-text">
+            But this one is special! You need to open it... please?
+          </p>
+        </div>
+        <button class="btn btn-primary" onclick="toScreen('s4')">
+          Go on... 💜
+        </button>
+      </div>
+
+      <!-- ── S5: Honest about strangers ── -->
+      <div class="screen" id="s5">
+        <span style="font-size: clamp(2.2rem, 6.5vw, 3.5rem)">🕯️</span>
+        <h2 class="t-serif">I know this might sound sudden.</h2>
+        <div class="divider"></div>
+        <p class="t-body" style="max-width: 420px">
+          We don’t have a story,<br />
+          no long conversations,<br />
+          no shared moments,<br />
+          But sometimes you don’t need all that to feel curious about
+          someone,<br />
+        </p>
+        <p class="t-dance">And I guess… that’s where I am 🙂</p>
+        <button class="btn btn-primary" onclick="toScreen('s6')">
+          There's more ➜
+        </button>
+      </div>
+
+      <!-- ── S6: Balloons + feeling ── -->
+      <div class="screen" id="s6">
+        <h3 class="t-pacifico">This is what I feel...</h3>
+        <p class="t-body">watch the balloons carry my words to you</p>
+        <div class="balloon-row">
+          <div class="balloon" style="animation-delay: 0s">I</div>
+          <div class="balloon" style="animation-delay: 0.35s">Really</div>
+          <div class="balloon" style="animation-delay: 0.7s">Like</div>
+          <div class="balloon" style="animation-delay: 1.05s">You</div>
+        </div>
+        <button class="btn btn-primary" onclick="toScreen('s7')">
+          Keep going 💕
+        </button>
+      </div>
+
+      <!-- ── S7: The letter ── -->
+      <div class="screen" id="s7">
+        <p class="letter-label">a letter, honestly written —</p>
+        <div class="letter-wrap">
+          <div id="tw-text"></div>
+          <span class="tw-cursor" id="tw-cursor"></span>
+        </div>
+        <button
+          id="final-btn"
+          class="btn btn-gold"
+          style="display: none"
+          onclick="toScreen('s8')"
+        >
+          Read to the end ↓
+        </button>
+      </div>
+
+      <!-- ── S8: The ask ── -->
+      <div class="screen" id="s8">
+        <h1 class="t-script" style="font-size: clamp(2.2rem, 6.5vw, 4.5rem)">
+          Just one coffee.
+        </h1>
+        <div class="divider-gold"></div>
+        <p class="t-body" style="max-width: 400px">
+          That's all I'm asking.<br />
+          Not forever. Not a promise.<br />
+          Just one chance to find out<br />if what I feel is right.
+        </p>
+        <div class="btn-row">
+          <button class="btn btn-yes" onclick="celebrate()">
+            Yes — one coffee ☕
+          </button>
+          <button class="btn btn-ghost" onclick="showGrace()">I can't</button>
+        </div>
+      </div>
+
+      <!-- ── S9: Celebration ── -->
+      <div class="screen" id="s9">
+        <span class="pulse-heart">💖</span>
+        <h1 class="t-script" style="font-size: clamp(2.6rem, 7.5vw, 5.5rem)">
+          She said yes.
+        </h1>
+        <div class="divider"></div>
+        <p class="t-body" style="max-width: 380px">
+          One coffee.<br />
+          The beginning of something real.
+        </p>
+        <div class="divider-gold"></div>
+        <p
+          class="t-dance"
+          style="color: var(--gold); font-size: clamp(0.9rem, 2.5vw, 1.1rem)"
+        >
+          — thank you for being brave enough to say yes ✨
+        </p>
+      </div>
+    </div>
+    <!-- /stage -->
+
+    <script>
+      /* ── Stars ── */
+      (function () {
+        const c = document.getElementById("stars");
+        for (let i = 0; i < 120; i++) {
+          const s = document.createElement("div");
+          s.className = "star";
+          const sz = 1 + Math.random() * 2.5;
+          s.style.cssText = `
+        width:${sz}px;height:${sz}px;
+        top:${Math.random() * 100}%;left:${Math.random() * 100}%;
+        --dur:${2 + Math.random() * 4}s;--delay:${Math.random() * 5}s;
+      `;
+          c.appendChild(s);
+        }
+      })();
+
+      /* ── Petals ── */
+      (function () {
+        const c = document.getElementById("petals");
+        const emojis = ["🌸", "🌺", "🌹", "💮", "✿"];
+        for (let i = 0; i < 20; i++) {
+          const p = document.createElement("div");
+          p.className = "petal-item";
+          p.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+          p.style.cssText = `
+        left:${Math.random() * 100}%;
+        font-size:${0.7 + Math.random() * 1.1}rem;
+        --sway:${(Math.random() - 0.5) * 80}px;
+        animation-duration:${9 + Math.random() * 11}s;
+        animation-delay:${Math.random() * 12}s;
+      `;
+          c.appendChild(p);
+        }
+      })();
+
+      /* ── Particles ── */
+      (function () {
+        const c = document.getElementById("particles");
+        const cols = ["#d14477", "#e0b860", "#c9aaee", "#f28ab0"];
+        for (let i = 0; i < 24; i++) {
+          const p = document.createElement("div");
+          p.className = "particle";
+          const sz = 2 + Math.random() * 4;
+          p.style.cssText = `
+        width:${sz}px;height:${sz}px;
+        left:${Math.random() * 100}%;
+        background:${cols[Math.floor(Math.random() * cols.length)]};
+        --dx:${(Math.random() - 0.5) * 100}px;
+        animation-duration:${9 + Math.random() * 12}s;
+        animation-delay:${Math.random() * 12}s;
+      `;
+          c.appendChild(p);
+        }
+      })();
+
+      /* ── Name gate ── */
+      function checkName() {
+        const v = document
+          .getElementById("name-input")
+          .value.trim()
+          .toLowerCase();
+        const e = document.getElementById("err-msg");
+        if (v && v.toLowerCase().replace(/\s+/g, "").includes("rida")) {
+          e.classList.remove("show");
+          startMusic();
+          toScreen("s1");
+          setTimeout(() => toScreen("s2"), 3000);
+        } else {
+          e.classList.add("show");
+          document.getElementById("name-input").select();
+        }
+      }
+
+      /* ── Music ── */
+      function startMusic() {
+        const m = document.getElementById("music");
+        m.volume = 0.08;
+        m.play().catch(() => {});
+      }
+
+      /* ── Screen nav ── */
+      function toScreen(id) {
+        document
+          .querySelectorAll(".screen")
+          .forEach((s) => s.classList.remove("active"));
+        document.getElementById(id).classList.add("active");
+        if (id === "s7") startTypewriter();
+      }
+
+      /* ── Typewriter letter ── */
+      const letter = `I won't pretend we're close.
+We're strangers — and I know that.
+
+But there's something about you
+that I keep coming back to,
+quietly, honestly,
+without even meaning to.
+
+I don't have a perfect speech.
+I don't have a grand plan.
+
+I just have this feeling —
+that I'd regret it forever
+if I never said anything at all.
+
+So here it is, as simply as I can say it:
+
+I'd really like to know you.`;
+
+      function startTypewriter() {
+        const el = document.getElementById("tw-text");
+        const cur = document.getElementById("tw-cursor");
+        const btn = document.getElementById("final-btn");
+        el.textContent = "";
+        btn.style.display = "none";
+        cur.style.display = "inline-block";
+        let i = 0;
+        function type() {
+          if (i < letter.length) {
+            el.textContent += letter[i];
+            i++;
+            setTimeout(type, i < 60 ? 55 : 42);
+          } else {
+            cur.style.display = "none";
+            btn.style.display = "inline-block";
+            btn.style.animation = "reveal 0.7s ease both";
+          }
+        }
+        setTimeout(type, 400);
+      }
+
+      /* ── Dignified No ── */
+      function showGrace() {
+        document.getElementById("grace-overlay").style.display = "flex";
+      }
+
+      /* ── Celebrate ── */
+      function celebrate() {
+        toScreen("s9");
+        launchConfetti();
+      }
+
+      /* ── Confetti ── */
+      function launchConfetti() {
+        const canvas = document.getElementById("confetti");
+        const ctx = canvas.getContext("2d");
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        const shapes = ["❤️", "🌹", "✨", "💖", "🌸", "💕"];
+        const pts = Array.from({ length: 200 }, () => ({
+          x: Math.random() * canvas.width,
+          y: Math.random() * canvas.height - canvas.height,
+          vy: 1.5 + Math.random() * 2.5,
+          vx: (Math.random() - 0.5) * 1.8,
+          sz: 11 + Math.random() * 14,
+          rot: Math.random() * 360,
+          rv: (Math.random() - 0.5) * 3,
+          s: shapes[Math.floor(Math.random() * shapes.length)],
+        }));
+        let t = 0;
+        function draw() {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          pts.forEach((p) => {
+            ctx.save();
+            ctx.font = `${p.sz}px serif`;
+            ctx.translate(p.x, p.y);
+            ctx.rotate((p.rot * Math.PI) / 180);
+            ctx.fillText(p.s, 0, 0);
+            ctx.restore();
+            p.x += p.vx;
+            p.y += p.vy;
+            p.rot += p.rv;
+            if (p.y > canvas.height) {
+              p.y = -20;
+              p.x = Math.random() * canvas.width;
+            }
+          });
+          if (++t < 400) requestAnimationFrame(draw);
+          else ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+        draw();
+      }
+
+      window.addEventListener("resize", () => {
+        const c = document.getElementById("confetti");
+        c.width = window.innerWidth;
+        c.height = window.innerHeight;
+      });
+    </script>
+  </body>
+</html>
